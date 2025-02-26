@@ -19,7 +19,7 @@ export type Assets = {
 
 export type FundingRateState = {
     cumulativeInterestRate: BN;
-    lastUpdated: BN;
+    lastUpdate: BN;
     hourlyFundingDbps: number;
 };
 
