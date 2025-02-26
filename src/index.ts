@@ -32,7 +32,12 @@ async function main() {
 
         // Fetch the custody account
         const rawAccount = await program.account.custody.fetch(SOL_CUSTODY_ADDRESS);
+        console.log("\nDebug - Raw Account Data:");
+        console.log(JSON.stringify(rawAccount, null, 2));
+        
         const custodyAccount = rawAccount as unknown as CustodyAccount;
+        console.log("\nDebug - Funding Rate State:");
+        console.log(JSON.stringify(custodyAccount.fundingRateState, null, 2));
 
         console.log("Custody Account Data:");
         console.log("--------------------");
@@ -58,7 +63,7 @@ async function main() {
         // Print funding rate information
         console.log("\nFunding Rate Information:");
         console.log(`Cumulative Interest Rate: ${custodyAccount.fundingRateState.cumulativeInterestRate.toString()}`);
-        console.log(`Last Updated: ${custodyAccount.fundingRateState.lastUpdated?.toString() || 'N/A'}`);
+        console.log(`Last Updated: ${custodyAccount.fundingRateState.lastUpdate?.toString() || 'N/A'}`);
         console.log(`Hourly Funding Rate (bps): ${custodyAccount.fundingRateState.hourlyFundingDbps}`);
 
     } catch (error) {
