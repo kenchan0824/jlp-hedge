@@ -1,7 +1,7 @@
-import { Program, AnchorProvider, Idl, BN } from "@coral-xyz/anchor";
+import { Program, AnchorProvider, Wallet } from "@coral-xyz/anchor";
 import { Connection, PublicKey, Keypair } from "@solana/web3.js";
-import { CustodyAccount } from "./types/perpetuals";
-import perpetualsIdl from "./idl/perpetuals.json";
+import { Perpetuals } from "./types/perpetuals";
+import idl from "./idl/perpetuals.json";
 
 // Program ID from the documentation
 const PERPETUALS_PROGRAM_ID = new PublicKey("PERPHjGBqRHArX4DySjwM6UJHiR3sWAatqfdBS2qQJu");
@@ -13,29 +13,20 @@ async function main() {
     // Connect to Solana mainnet
     const connection = new Connection("https://api.mainnet-beta.solana.com", "confirmed");
     
-    // Create a dummy wallet since we're only reading data
-    const dummyWallet = {
-        publicKey: Keypair.generate().publicKey,
-        signTransaction: async () => { throw new Error("Not implemented"); },
-        signAllTransactions: async () => { throw new Error("Not implemented"); }
-    };
-
-    // Create provider
-    const provider = new AnchorProvider(connection, dummyWallet, {
-        commitment: "confirmed",
-        skipPreflight: true
-    });
-
     try {
         // Create program instance with local IDL
-        const program = new Program(perpetualsIdl as Idl, PERPETUALS_PROGRAM_ID, provider);
+        const program = new Program<Perpetuals>(
+            idl as Perpetuals, 
+            PERPETUALS_PROGRAM_ID, 
+            new AnchorProvider(
+                connection, 
+                new Wallet(Keypair.generate()),
+                AnchorProvider.defaultOptions(),
+            ),
+        );
 
         // Fetch the custody account
-        const rawAccount = await program.account.custody.fetch(SOL_CUSTODY_ADDRESS);
-        console.log("\nDebug - Raw Account Data:");
-        console.log(JSON.stringify(rawAccount, null, 2));
-        
-        const custodyAccount = rawAccount as unknown as CustodyAccount;
+        const custodyAccount = await program.account.custody.fetch(SOL_CUSTODY_ADDRESS);
         console.log("\nDebug - Funding Rate State:");
         console.log(JSON.stringify(custodyAccount.fundingRateState, null, 2));
 
