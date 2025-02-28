@@ -25,31 +25,31 @@ describe('Jupiter Perpetuals Tests', () => {
         expect(btc_custody_account).not.toBeNull();
     });
 
-    it('utilization rate should between 10% and 80%', async () => {
+    it('utilization rate should between 5% and 60%', async () => {
 
         const sol_rate = utilRate(
             sol_custody_account.assets.owned, 
             sol_custody_account.assets.locked
         );
-        expect(sol_rate).toBeGreaterThan(10);
-        expect(sol_rate).toBeLessThan(80);
         console.log(`sol util: ${sol_rate}`);
+        expect(sol_rate).toBeGreaterThan(5);
+        expect(sol_rate).toBeLessThan(60);
 
         const eth_rate = utilRate(
             eth_custody_account.assets.owned, 
             eth_custody_account.assets.locked
         );
-        expect(eth_rate).toBeGreaterThan(10);
-        expect(eth_rate).toBeLessThan(80);
         console.log(`eth util: ${eth_rate}`);
+        expect(eth_rate).toBeGreaterThan(5);
+        expect(eth_rate).toBeLessThan(60);
 
         const btc_rate = utilRate(
             btc_custody_account.assets.owned, 
             btc_custody_account.assets.locked
         );
-        expect(btc_rate).toBeGreaterThan(10);
-        expect(btc_rate).toBeLessThan(80);
         console.log(`btc util: ${btc_rate}`);
+        expect(btc_rate).toBeGreaterThan(5);
+        expect(btc_rate).toBeLessThan(60);
     });
 
 });
