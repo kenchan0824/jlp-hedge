@@ -15,18 +15,22 @@ describe('Jupiter Perpetuals Tests', () => {
     });
 
     it('should fetch sol, eth, and btc custody accounts successfully', async () => {
-        sol_custody_account = await get_custody_account(connection, CUSTODY_PDA.SOL)
-        eth_custody_account = await get_custody_account(connection, CUSTODY_PDA.ETH)
-        btc_custody_account = await get_custody_account(connection, CUSTODY_PDA.BTC)
+        try {
+            sol_custody_account = await get_custody_account(connection, CUSTODY_PDA.SOL)
+            expect(sol_custody_account).not.toBeNull();
 
-        // Assert that ownedTokens and lockedTokens are not null
-        expect(sol_custody_account).not.toBeNull();
-        expect(eth_custody_account).not.toBeNull();
-        expect(btc_custody_account).not.toBeNull();
+            eth_custody_account = await get_custody_account(connection, CUSTODY_PDA.ETH)
+            expect(eth_custody_account).not.toBeNull();
+
+            btc_custody_account = await get_custody_account(connection, CUSTODY_PDA.BTC)
+            expect(btc_custody_account).not.toBeNull();
+        } catch (error) {
+            console.error('Error fetching custody accounts:', error);
+            throw error; // Re-throw to fail the test
+        }
     });
 
     it('utilization rate should between 5% and 60%', async () => {
-
         const sol_rate = utilRate(
             sol_custody_account.assets.owned, 
             sol_custody_account.assets.locked
